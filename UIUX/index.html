@@ -1,0 +1,97 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-container {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Churn Prediction</h1>
+    <div class="input-container">
+        <label for="accountWeeks">Account Weeks:</label>
+        <input type="number" id="accountWeeks" name="accountWeeks" value="70">
+    </div>
+    <div class="input-container">
+        <label for="dataUsage">Data Usage:</label>
+        <input type="number" id="dataUsage" name="dataUsage" value="2.5">
+    </div>
+    <!-- Add input fields for other features (CustServCalls, DayMins, DayCalls, etc.) -->
+    <button onclick="predict()">Predict</button>
+    <div id="result"></div>
+
+    <script>
+        async function predict() {
+            const accountWeeks = document.getElementById('accountWeeks').value;
+            const dataUsage = document.getElementById('dataUsage').value;
+            // Get values for other input fields
+            
+            // Make a POST request to your backend API
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accountWeeks,
+                    dataUsage,
+                    // Add other feature values here
+                })
+            });
+            const result = await response.json();
+            console.log('Prediction Result:', result);
+            let prediction = result.prediction;
+      
+            if (typeof prediction === 'undefined') {
+                console.log('Warning: Prediction is undefined. Defaulting to negative churn (0).');
+                prediction = 0;
+            }
+            
+            // Display prediction to user
+            document.getElementById('result').innerText = `Churn Prediction: ${prediction}`;
+        }
+    </script>
+</body>
+</html>
